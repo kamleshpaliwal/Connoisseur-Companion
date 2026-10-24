@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from types import TracebackType
+from typing import Any
 
 from ollama import AsyncClient
 
@@ -47,3 +48,14 @@ class OllamaChatClient:
             stream=False,
         )
         return response.message.content
+
+    async def chat_messages(
+        self, messages: list[dict[str, Any]], tools: list[dict[str, Any]]
+    ) -> Any:
+        """Return the model response, including any requested tool calls."""
+        return await self._client.chat(
+            model=self.model,
+            messages=messages,
+            tools=tools,
+            stream=False,
+        )
