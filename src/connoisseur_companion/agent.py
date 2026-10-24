@@ -30,7 +30,9 @@ class RestaurantAgent:
         self._mcp = mcp_client or MCPClient()
         self._max_tool_rounds = max_tool_rounds
 
-    async def answer(self, prompt: str) -> str:
+    async def answer(
+        self, prompt: str, history: list[dict[str, Any]] | None = None
+    ) -> str:
         """Answer a user prompt, executing model-requested MCP tools as needed."""
         async with self._ollama, self._mcp:
             discovered_tools = await self._mcp.list_tools()
@@ -48,8 +50,13 @@ class RestaurantAgent:
             allowed_tools = {tool.name for tool in discovered_tools}
             messages: list[dict[str, Any]] = [
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": prompt},
             ]
+            for turn in history or []:
+                role = turn.get("role")
+                content = turn.get("content")
+                if role in {"user", "assistant"} and isinstance(content, str):
+                    messages.append({"role": role, "content": content})
+            messages.append({"role": "user", "content": prompt})
 
             for _ in range(self._max_tool_rounds):
                 response = await self._ollama.chat_messages(messages, tools)

@@ -8,10 +8,11 @@ version = "0.1.0"
 description = "A local-first AI restaurant recommendation application."
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["mcp>=1.28,<2", "ollama>=0.6,<1"]
+dependencies = ["gradio>=5,<7", "mcp>=1.28,<2", "ollama>=0.6,<1"]
 
 [project.scripts]
 connoisseur-mcp = "connoisseur_companion.mcp_server:main"
+connoisseur-app = "connoisseur_companion.app:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
