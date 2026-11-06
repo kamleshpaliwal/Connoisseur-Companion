@@ -72,7 +72,19 @@ class RestaurantAgent:
                 for call in tool_calls:
                     name = call.function.name
                     if name not in allowed_tools:
-                        raise ValueError(f"Model requested an unknown MCP tool: {name}")
+                        messages.append(
+                            {
+                                "role": "tool",
+                                "tool_name": name,
+                                "content": json.dumps(
+                                    {
+                                        "error": f"Unknown tool '{name}'. "
+                                        f"Available tools: {sorted(allowed_tools)}"
+                                    }
+                                ),
+                            }
+                        )
+                        continue
                     result = await self._mcp.call_tool(
                         name, arguments=call.function.arguments
                     )
