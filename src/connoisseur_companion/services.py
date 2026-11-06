@@ -110,6 +110,29 @@ class RestaurantService:
         restaurant = self._restaurants_by_id.get(item_id)
         return deepcopy(restaurant) if restaurant is not None else None
 
+    def search_restaurants(self, query: str, limit: int = 5) -> list[dict[str, Any]]:
+        """Find restaurants whose names contain a case-insensitive query."""
+        phrase = query.strip().casefold()
+        if not phrase:
+            raise ValueError("query must be a non-empty phrase")
+        if limit < 1:
+            raise ValueError("limit must be at least 1")
+
+        matches = [
+            restaurant
+            for restaurant in self._restaurants
+            if phrase in restaurant["name"].casefold()
+        ]
+        matches.sort(
+            key=lambda restaurant: (
+                0 if restaurant["name"].casefold() == phrase else 1,
+                0 if restaurant["name"].casefold().startswith(phrase) else 1,
+                -restaurant["rating"],
+                restaurant["name"].casefold(),
+            )
+        )
+        return deepcopy(matches[:limit])
+
     def recommend_by_vibe(self, vibe: str, limit: int = 5) -> list[dict[str, Any]]:
         """Match an atmosphere phrase against vibe/environment, then rank by rating."""
         phrase = vibe.strip().casefold()

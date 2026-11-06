@@ -16,6 +16,12 @@ def get_restaurant_info(item_id: int) -> dict | None:
 
 
 @mcp.tool()
+def search_restaurants(query: str, limit: int = 5) -> list[dict]:
+    """Search restaurant names using a full or partial, case-insensitive phrase."""
+    return service.search_restaurants(query, limit)
+
+
+@mcp.tool()
 def recommend_by_vibe(vibe: str, limit: int = 5) -> list[dict]:
     """Recommend restaurants whose vibe or environment matches a phrase."""
     return service.recommend_by_vibe(vibe, limit)

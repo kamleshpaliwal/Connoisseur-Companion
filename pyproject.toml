@@ -10,6 +10,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["gradio>=5,<7", "mcp>=1.28,<2", "ollama>=0.6,<1"]
 
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
 [project.scripts]
 connoisseur-mcp = "connoisseur_companion.mcp_server:main"
 connoisseur-app = "connoisseur_companion.app:main"
